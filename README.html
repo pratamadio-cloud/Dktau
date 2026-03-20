@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Manager - Download & Copy Code (PHP Support)</title>
+</head>
+<body>
+    <h1>📝 Code Manager</h1>
+    <p>Download file kode atau salin kode dengan mudah (Mendukung PHP)</p>
+    
+    <hr>
+    
+    <h2>✏️ Editor Kode</h2>
+    
+    <table border="0" cellpadding="5" cellspacing="0" width="100%">
+        <tr bgcolor="#f0f0f0">
+            <td>
+                <b>PHP / HTML / CSS / JavaScript</b>
+                &nbsp;&nbsp;
+                <button onclick="copyCode()">📋 Salin Kode</button>
+                <button onclick="downloadCode()">💾 Download File</button>
+                <button onclick="clearCode()">🗑️ Hapus Semua</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <textarea id="codeEditor" rows="15" cols="80" style="width:100%; font-family:monospace; font-size:14px;">&lt;?php
+// Contoh kode PHP
+session_start();
+
+// Array data contoh
+$users = [
+    ['id' => 1, 'name' => 'John Doe', 'email' => 'john@example.com'],
+    ['id' => 2, 'name' => 'Jane Smith', 'email' => 'jane@example.com'],
+    ['id' => 3, 'name' => 'Bob Johnson', 'email' => 'bob@example.com']
+];
+
+// Fungsi untuk menampilkan data
+function displayUsers($users) {
+    if (empty($users)) {
+        echo "&lt;p&gt;Tidak ada data user&lt;/p&gt;";
+        return;
+    }
+    
+    echo "&lt;table border='1' cellpadding='10'&gt;";
+    echo "&lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Nama&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;/tr&gt;";
+    
+    foreach ($users as $user) {
+        echo "&lt;tr&gt;";
+        echo "&lt;td&gt;{$user['id']}&lt;/td&gt;";
+        echo "&lt;td&gt;{$user['name']}&lt;/td&gt;";
+        echo "&lt;td&gt;{$user['email']}&lt;/td&gt;";
+        echo "&lt;/tr&gt;";
+    }
+    
+    echo "&lt;/table&gt;";
+}
+
+// Proses form jika ada
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
+    $name = htmlspecialchars($_POST['name']);
+    $email = htmlspecialchars($_POST['email']);
+    echo "&lt;p&gt;Terima kasih, $name! Email Anda $email telah dikirim.&lt;/p&gt;";
+}
+?&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang="id"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Aplikasi PHP Sederhana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Selamat Datang di Aplikasi PHP&lt;/h1&gt;
+    
+    &lt;?php
+    // Menampilkan data user
+    displayUsers($users);
+    ?&gt;
+    
+    &lt;h2&gt;Form Input User&lt;/h2&gt;
+    &lt;form method="POST" action=""&gt;
+        &lt;label&gt;Nama: &lt;/label&gt;
+        &lt;input type="text" name="name" required&gt;
+        &lt;br&gt;&lt;br&gt;
+        
+        &lt;label&gt;Email: &lt;/label&gt;
+        &lt;input type="email" name="email" required&gt;
+        &lt;br&gt;&lt;br&gt;
+        
+        &lt;input type="submit" name="submit" value="Kirim"&gt;
+    &lt;/form&gt;
+    
+    &lt;?php
+    // Informasi session
+    echo "&lt;p&gt;Session ID: " . session_id() . "&lt;/p&gt;";
+    echo "&lt;p&gt;Waktu Server: " . date('Y-m-d H:i:s') . "&lt;/p&gt;";
+    ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+            </td>
+        </tr>
+        <tr bgcolor="#f9f9f9">
+            <td>
+                <b>📊 Statistik:</b> 
+                Jumlah karakter: <span id="charCount">0</span> | 
+                Jumlah baris: <span id="lineCount">0</span>
+            </td>
+        </tr>
+    </table>
+    
+    <br>
+    
+    <h2>📂 Buka File Kode</h2>
+    
+    <table border="1" cellpadding="10" cellspacing="0" bgcolor="#f9f9f9">
+        <tr>
+            <td>
+                <form onsubmit="return false;">
+                    <label for="fileInput">
+                        <b>📁 Pilih File:</b>
+                    </label>
+                    <input type="file" id="fileInput" accept=".php,.html,.css,.js,.txt,.json,.xml,.py,.java,.cpp,.sql,.rb,.go">
+                    &nbsp;&nbsp;
+                    <span id="filename">Tidak ada file dipilih</span>
+                    &nbsp;&nbsp;
+                    <button type="button" onclick="saveAsFile()">💾 Simpan Sebagai</button>
+                    &nbsp;&nbsp;
+                    <button type="button" onclick="saveAsPHP()">🐘 Simpan sebagai PHP</button>
+                </form>
+                <br>
+                <small>
+                    <b>Format yang didukung:</b> .php, .html, .css, .js, .txt, .json, .xml, .py, .java, .cpp, .sql, .rb, .go<br>
+                    <b>Fitur khusus PHP:</b> Bisa menyimpan file dengan ekstensi .php dan menjalankannya di server web
+                </small>
+            </td>
+        </tr>
+    </table>
+    
+    <br>
+    
+    <h2>🐘 Informasi PHP</h2>
+    
+    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+        <tr bgcolor="#e0e0e0">
+            <th>Tips Penggunaan PHP</th>
+        </tr>
+        <tr>
+            <td>
+                <b>📌 Cara menjalankan file PHP:</b><br>
+                1. Simpan file dengan ekstensi <b>.php</b><br>
+                2. Letakkan di folder <b>htdocs</b> (XAMPP) atau <b>www</b> (WAMP)<br>
+                3. Akses melalui browser: <b>http://localhost/nama_file.php</b><br>
+                4. Pastikan server web (Apache) sudah berjalan<br><br>
+                
+                <b>📌 Struktur dasar PHP:</b><br>
+                <code>
+                &lt;?php<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Kode PHP di sini<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;echo "Hello World!";<br>
+                ?&gt;
+                </code><br><br>
+                
+                <b>📌 Fungsi PHP yang sering digunakan:</b><br>
+                • <code>echo</code> / <code>print</code> - Menampilkan output<br>
+                • <code>isset()</code> - Memeriksa apakah variabel ada<br>
+                • <code>empty()</code> - Memeriksa apakah variabel kosong<br>
+                • <code>include()</code> / <code>require()</code> - Menyertakan file lain<br>
+                • <code>$_GET</code> / <code>$_POST</code> - Mengambil data form<br>
+                • <code>mysqli_connect()</code> - Koneksi ke database MySQL<br>
+            </td>
+        </tr>
+    </table>
+    
+    <br>
+    <hr>
+    <small>
+        <b>Shortcut Keyboard:</b><br>
+        • Ctrl + S = Download file<br>
+        • Ctrl + D = Hapus semua kode<br>
+        • Ctrl + Shift + P = Simpan sebagai PHP
+    </small>
+    
+    <div id="infoMessage" style="position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; padding: 10px 20px; display: none; border: 1px solid #fff; border-radius: 5px; z-index: 9999;">
+    </div>
+    
+    <script>
+        const codeEditor = document.getElementById('codeEditor');
+        const charCountSpan = document.getElementById('charCount');
+        const lineCountSpan = document.getElementById('lineCount');
+        const fileInput = document.getElementById('fileInput');
+        const filenameSpan = document.getElementById('filename');
+        
+        // Update statistik kode
+        function updateStats() {
+            const code = codeEditor.value;
+            const charCount = code.length;
+            const lineCount = code.split('\n').length;
+            
+            charCountSpan.textContent = charCount;
+            lineCountSpan.textContent = lineCount;
+        }
+        
+        // Tampilkan pesan info
+        function showMessage(message, isError = false) {
+            const messageDiv = document.getElementById('infoMessage');
+            messageDiv.textContent = message;
+            messageDiv.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Salin kode ke clipboard
+        function copyCode() {
+            const code = codeEditor.value;
+            
+            if (!code.trim()) {
+                showMessage('Tidak ada kode untuk disalin!', true);
+                return;
+            }
+            
+            navigator.clipboard.writeText(code).then(() => {
+                showMessage('✅ Kode berhasil disalin ke clipboard!');
+            }).catch(() => {
+                // Fallback untuk browser lama
+                codeEditor.select();
+                document.execCommand('copy');
+                showMessage('✅ Kode berhasil disalin ke clipboard!');
+            });
+        }
+        
+        // Download file dengan nama tertentu
+        function downloadCode() {
+            const code = codeEditor.value;
+            
+            if (!code.trim()) {
+                showMessage('Tidak ada kode untuk di-download!', true);
+                return;
+            }
+            
+            const fileName = prompt('Masukkan nama file (termasuk ekstensi):\nContoh: index.php, style.css, script.js', 'kode.php');
+            
+            if (fileName) {
+                // Tentukan MIME type berdasarkan ekstensi
+                let mimeType = 'text/plain';
+                const ext = fileName.split('.').pop().toLowerCase();
+                
+                switch(ext) {
+                    case 'php':
+                        mimeType = 'application/x-httpd-php';
+                        break;
+                    case 'html':
+                        mimeType = 'text/html';
+                        break;
+                    case 'css':
+                        mimeType = 'text/css';
+                        break;
+                    case 'js':
+                        mimeType = 'application/javascript';
+                        break;
+                    case 'json':
+                        mimeType = 'application/json';
+                        break;
+                    case 'xml':
+                        mimeType = 'application/xml';
+                        break;
+                }
+                
+                const blob = new Blob([code], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                let message = `✅ File "${fileName}" berhasil di-download!`;
+                if (ext === 'php') {
+                    message += `\n\n📌 Tips: Letakkan file di folder htdocs/htdocs dan akses melalui http://localhost/${fileName}`;
+                }
+                showMessage(message);
+            }
+        }
+        
+        // Simpan sebagai file dengan ekstensi apapun
+        function saveAsFile() {
+            const code = codeEditor.value;
+            
+            if (!code.trim()) {
+                showMessage('Tidak ada kode untuk disimpan!', true);
+                return;
+            }
+            
+            const fileExtension = prompt('Pilih ekstensi file:\n1. .php (PHP)\n2. .html (HTML)\n3. .css (CSS)\n4. .js (JavaScript)\n5. .txt (Text)\n6. .json (JSON)\n7. .xml (XML)\n\nMasukkan ekstensi (contoh: .php):', '.php');
+            
+            if (fileExtension) {
+                let fileName = `kode_${Date.now()}${fileExtension}`;
+                let mimeType = 'text/plain';
+                
+                const ext = fileExtension.replace('.', '').toLowerCase();
+                switch(ext) {
+                    case 'php':
+                        mimeType = 'application/x-httpd-php';
+                        break;
+                    case 'html':
+                        mimeType = 'text/html';
+                        break;
+                    case 'css':
+                        mimeType = 'text/css';
+                        break;
+                    case 'js':
+                        mimeType = 'application/javascript';
+                        break;
+                    case 'json':
+                        mimeType = 'application/json';
+                        break;
+                    case 'xml':
+                        mimeType = 'application/xml';
+                        break;
+                }
+                
+                const blob = new Blob([code], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showMessage(`✅ File "${fileName}" berhasil disimpan!`);
+            }
+        }
+        
+        // Simpan khusus sebagai file PHP
+        function saveAsPHP() {
+            const code = codeEditor.value;
+            
+            if (!code.trim()) {
+                showMessage('Tidak ada kode untuk disimpan!', true);
+                return;
+            }
+            
+            const fileName = prompt('Masukkan nama file PHP (tanpa ekstensi):', 'index');
+            
+            if (fileName) {
+                const fullFileName = `${fileName}.php`;
+                const blob = new Blob([code], { type: 'application/x-httpd-php' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fullFileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showMessage(`✅ File PHP "${fullFileName}" berhasil disimpan!\n\n📌 Untuk menjalankan:\n1. Pindahkan ke folder htdocs/XAMPP\n2. Akses: http://localhost/${fullFileName}`);
+            }
+        }
+        
+        // Hapus semua kode
+        function clearCode() {
+            if (confirm('Apakah Anda yakin ingin menghapus semua kode?')) {
+                codeEditor.value = '';
+                updateStats();
+                showMessage('🗑️ Semua kode telah dihapus!');
+            }
+        }
+        
+        // Baca file yang dipilih
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                filenameSpan.textContent = file.name;
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    codeEditor.value = e.target.result;
+                    updateStats();
+                    
+                    let message = `✅ File "${file.name}" berhasil dibuka!`;
+                    if (file.name.endsWith('.php')) {
+                        message += `\n\n📌 File PHP siap diedit. Simpan dengan ekstensi .php untuk menjalankannya di server.`;
+                    }
+                    showMessage(message);
+                };
+                
+                reader.onerror = function() {
+                    showMessage('❌ Gagal membaca file!', true);
+                };
+                
+                reader.readAsText(file);
+            } else {
+                filenameSpan.textContent = 'Tidak ada file dipilih';
+            }
+        });
+        
+        // Update stats saat mengetik
+        codeEditor.addEventListener('input', updateStats);
+        
+        // Initial stats update
+        updateStats();
+        
+        // Shortcut keyboard
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S untuk download
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                downloadCode();
+            }
+            
+            // Ctrl+D untuk clear
+            if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+                e.preventDefault();
+                clearCode();
+            }
+            
+            // Ctrl+Shift+P untuk save as PHP
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
+                e.preventDefault();
+                saveAsPHP();
+            }
+        });
+        
+        // Validasi apakah kode mengandung tag PHP
+        function hasPHPCode() {
+            const code = codeEditor.value;
+            return code.includes('<?php') || code.includes('<?=');
+        }
+        
+        // Tampilkan peringatan jika ada kode PHP tetapi disimpan dengan ekstensi lain
+        function validatePHPWarning(fileName) {
+            if (hasPHPCode() && !fileName.endsWith('.php')) {
+                const confirmSave = confirm('⚠️ Peringatan: Kode Anda mengandung tag PHP tetapi akan disimpan sebagai file non-PHP.\n\nFile PHP hanya akan berfungsi jika disimpan dengan ekstensi .php dan dijalankan di server web.\n\nApakah Anda tetap ingin menyimpan dengan ekstensi ini?');
+                return confirmSave;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
